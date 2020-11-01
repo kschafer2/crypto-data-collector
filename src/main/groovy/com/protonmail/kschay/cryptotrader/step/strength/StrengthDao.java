@@ -24,7 +24,8 @@ public class StrengthDao implements StrengthRepository {
             "and currency = :currency ";
 
     private static final String UPDATE_CURRENCY_STRENGTH =
-            "update strength set currency = :currency, value = :strength, date = :date, updateTime = current_timestamp " +
+            "update strength set currency = :currency, value = :strength, " +
+            "date = :date, updateTime = current_timestamp " +
             "where date(date) = date(:date) " +
             "and currency = :currency " +
             "order by insertTime desc " +
