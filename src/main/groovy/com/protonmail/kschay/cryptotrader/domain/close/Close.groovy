@@ -7,7 +7,6 @@ import com.protonmail.kschay.cryptotrader.util.DateAndTime
 import java.sql.Timestamp
 
 class Close {
-    Integer id
     Symbol symbol
     Double price
     Integer hour

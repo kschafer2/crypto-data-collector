@@ -32,7 +32,7 @@ enum Symbol {
     LINKUSD
 
     Integer getPeriod() {
-        if(secondCurrency() == Currency.BTC) {
+        if(secondCurrency() == Currency.USD) {
             return 16
         }
         return 8

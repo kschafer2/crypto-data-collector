@@ -32,7 +32,7 @@ public class CloseDao implements CloseRepository {
             "limit 1 ";
 
     private static final String GET_CLOSE =
-            "select id, symbol, price, hour, date from close " +
+            "select symbol, price, hour, date from close " +
             "where symbol like :symbol " +
             "order by date desc " +
             "limit 1 ";
