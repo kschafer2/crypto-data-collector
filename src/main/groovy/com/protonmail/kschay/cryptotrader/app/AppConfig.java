@@ -42,7 +42,7 @@ public class AppConfig {
     }
 
     @Bean
-    CurrencyList currencyList() {
+    public CurrencyList currencyList() {
         return currencyList;
     }
 
