@@ -26,12 +26,12 @@ abstract class GeminiPrivateClient extends Logging {
         this.webClient = webClient
     }
 
-    protected WebClient.ResponseSpec post(Payload payload) {
+    protected WebClient.ResponseSpec post(final Payload payload) {
         Thread.sleep(1000)
 
         try {
-            def b64payload = Base64.encoder.encodeToString(objectMapper.writeValueAsString(payload).getBytes())
-            def signature = buildSignature(System.getenv(geminiProperties.authSecret), b64payload)
+            final def b64payload = Base64.encoder.encodeToString(objectMapper.writeValueAsString(payload).getBytes())
+            final def signature = buildSignature(System.getenv(geminiProperties.authSecret), b64payload)
 
             return webClient.post()
                     .uri(geminiProperties.baseUrl + payload.getRequest())
@@ -49,15 +49,15 @@ abstract class GeminiPrivateClient extends Logging {
         catch(Exception e) {
             throw new RuntimeException(
                     "Error creating request for POST to: " +
-                            geminiProperties.baseUrl + payload.getRequest(), e
+                    geminiProperties.baseUrl + payload.getRequest(), e
             )
         }
     }
 
-    private static String buildSignature(String secret, String data) {
+    private static String buildSignature(final String secret, final String data) {
         try {
-            Mac mac = Mac.getInstance("HmacSHA384")
-            SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA384")
+            final Mac mac = Mac.getInstance("HmacSHA384")
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA384")
             mac.init(secretKeySpec)
             return Hex.encode(mac.doFinal(data.getBytes())).toString()
         }

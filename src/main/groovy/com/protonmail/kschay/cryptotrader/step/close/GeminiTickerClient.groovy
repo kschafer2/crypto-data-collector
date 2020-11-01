@@ -19,7 +19,7 @@ class GeminiTickerClient extends GeminiPublicClient implements TickerClient {
 
     @Override
     @Retryable(maxAttempts = 24, backoff = @Backoff(value = 900000L))
-    Ticker getTicker(Symbol symbol) {
+    Ticker getTicker(final Symbol symbol) {
         log.info("Retrieving ticker for " + symbol)
 
         return get("/v2/ticker/" + symbol)

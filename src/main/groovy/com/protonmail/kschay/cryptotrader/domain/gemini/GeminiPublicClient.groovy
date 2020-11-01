@@ -14,7 +14,7 @@ abstract class GeminiPublicClient extends Logging {
         this.webClient = webClient
     }
 
-    protected WebClient.ResponseSpec get(String uri) {
+    protected WebClient.ResponseSpec get(final String uri) {
         Thread.sleep(1000)
 
         return webClient

@@ -17,7 +17,7 @@ public class CloseWriter implements ItemWriter<Close> {
     }
 
     @Override
-    public void write(List<? extends Close> closes) {
+    public void write(final List<? extends Close> closes) {
         closes.forEach(closeRepository::insert);
     }
 }

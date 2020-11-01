@@ -39,7 +39,7 @@ enum Symbol {
     }
 
     Currency firstCurrency() {
-        def symbolString = toString()
+        final def symbolString = toString()
 
         if(symbolString.length() == 6) {
             return Currency.valueOf(symbolString.substring(0, 3))
@@ -55,7 +55,7 @@ enum Symbol {
     }
 
     Currency secondCurrency() {
-        def symbolString = toString()
+        final def symbolString = toString()
 
         if(symbolString.length() == 6) {
             return Currency.valueOf(symbolString.substring(3))
@@ -70,11 +70,11 @@ enum Symbol {
         return null
     }
 
-    static Symbol fromLowerCaseString(String lowerCaseString) {
+    static Symbol fromLowerCaseString(final String lowerCaseString) {
         return valueOf(lowerCaseString.toUpperCase())
     }
 
-    static Symbol of(Currency first, Currency second) {
+    static Symbol of(final Currency first, final Currency second) {
         return valueOf(first.toString() + second.toString())
     }
 }

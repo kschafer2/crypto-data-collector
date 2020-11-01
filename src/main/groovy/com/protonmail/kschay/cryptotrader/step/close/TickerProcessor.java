@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class TickerProcessor implements ItemProcessor<Ticker, Close> {
 
     @Override
-    public Close process(Ticker ticker) {
+    public Close process(final Ticker ticker) {
         return new Close(ticker);
     }
 }

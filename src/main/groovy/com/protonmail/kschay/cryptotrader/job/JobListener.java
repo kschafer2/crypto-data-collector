@@ -24,12 +24,12 @@ public class JobListener extends Logging implements JobExecutionListener {
     }
 
     @Override
-    public void beforeJob(JobExecution jobExecution) {
+    public void beforeJob(final JobExecution jobExecution) {
         log.info("Starting " + jobProperties.getName() + "...");
     }
 
     @Override
-    public void afterJob(JobExecution jobExecution) {
+    public void afterJob(final JobExecution jobExecution) {
         if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
             exitAsSuccess();
         }
@@ -46,13 +46,14 @@ public class JobListener extends Logging implements JobExecutionListener {
         System.exit(0);
     }
 
-    private void exitAsFailure(JobExecution jobExecution) {
+    private void exitAsFailure(final JobExecution jobExecution) {
         jobExecution.setStatus(BatchStatus.FAILED);
-        String failureMessage = jobProperties.getName() + " completed.";
+        String failureMessage = jobProperties.getName() + " failed.";
 
-        email.setSubject(jobProperties.getName() + " failed.");
+        email.setSubject(failureMessage);
         javaMailSender.send(email);
-        log.info("Job failed.");
+
+        log.info(failureMessage);
         System.exit(1);
     }
 }

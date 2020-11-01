@@ -15,7 +15,7 @@ class Close {
 
     Close(){}
 
-    Close(Ticker ticker) {
+    Close(final Ticker ticker) {
         this.symbol = ticker.getSymbol()
         this.price = ticker.dayClosePrice()
         this.hour = DateAndTime.localCloseHour()

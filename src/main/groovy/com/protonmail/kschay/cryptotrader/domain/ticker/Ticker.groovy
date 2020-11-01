@@ -15,11 +15,11 @@ class Ticker {
         return dayClosePrice(DateAndTime.localCloseHour())
     }
 
-    Double dayClosePrice(int localCloseHour) {
-        return this.getChanges().get(dayCloseIndex(localCloseHour))
+    Double dayClosePrice(final int localCloseHour) {
+        return this.changes.get(dayCloseIndex(localCloseHour))
     }
 
-    private static int dayCloseIndex(int localCloseHour) {
+    private static int dayCloseIndex(final int localCloseHour) {
         int currentHour = LocalDateTime.now().getHour()
 
         if(currentHour < localCloseHour) {

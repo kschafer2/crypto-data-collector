@@ -19,7 +19,7 @@ enum GeminiEndpoints {
 
     private String uri
 
-    GeminiEndpoints(uri) {
+    GeminiEndpoints(final String uri) {
         this.uri = uri
     }
 

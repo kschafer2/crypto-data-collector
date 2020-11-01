@@ -5,7 +5,7 @@ import com.protonmail.kschay.cryptotrader.domain.symbol.Symbol
 import static com.protonmail.kschay.cryptotrader.domain.symbol.Symbol.*
 
 enum Currency {
-    USD,
+    USD(List.of()),
     BTC(List.of(BTCUSD)),
     ETH(List.of(ETHUSD, ETHBTC)),
     BCH(List.of(BCHUSD, BCHBTC)),
@@ -17,9 +17,7 @@ enum Currency {
 
     private List<Symbol> symbols
 
-    Currency(){}
-
-    Currency(List<Symbol> symbols) {
+    Currency(final List<Symbol> symbols) {
         this.symbols = symbols
     }
 

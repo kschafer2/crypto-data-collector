@@ -24,15 +24,15 @@ public class CloseDao implements CloseRepository {
             "and symbol like :symbol ";
 
     private static final String UPDATE_CLOSE =
-            "update close set symbol = :symbol, price = :price, hour = :hour, date = :date, updateTime = current_timestamp " +
+            "update close set symbol = :symbol, price = :price, hour = :hour, " +
+            "date = :date, updateTime = current_timestamp " +
             "where date(date) = date(:date) " +
             "and symbol like :symbol " +
             "order by insertTime desc " +
             "limit 1 ";
 
     private static final String GET_CLOSE =
-            "select close.id, text symbol, price, hour, date from close " +
-            "inner join symbol on close.symbol like symbol.id " +
+            "select id, symbol, price, hour, date from close " +
             "where symbol like :symbol " +
             "order by date desc " +
             "limit 1 ";
@@ -51,11 +51,11 @@ public class CloseDao implements CloseRepository {
     }
 
     @Override
-    public boolean insert(Close close) {
+    public boolean insert(final Close close) {
         if(closeExists(close.getSymbol(), close.getDate())) {
             return update(close);
         }
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        final MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("symbol", close.getSymbol().toString());
         mapSqlParameterSource.addValue("price", close.getPrice());
         mapSqlParameterSource.addValue("hour", close.getHour());
@@ -65,17 +65,17 @@ public class CloseDao implements CloseRepository {
     }
 
     @Override
-    public boolean closeExists(Symbol symbol, Timestamp date) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("symbol", symbol);
+    public boolean closeExists(final Symbol symbol, final Timestamp date) {
+        final MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("symbol", symbol.toString());
         mapSqlParameterSource.addValue("date", date);
         Integer found = namedParameterJdbcTemplate.queryForObject(CLOSE_EXISTS, mapSqlParameterSource, Integer.class);
         return found != null && found > 0;
     }
 
     @Override
-    public boolean update(Close close) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+    public boolean update(final Close close) {
+        final MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("symbol", close.getSymbol().toString());
         mapSqlParameterSource.addValue("price", close.getPrice());
         mapSqlParameterSource.addValue("hour", close.getHour());
@@ -85,16 +85,16 @@ public class CloseDao implements CloseRepository {
     }
 
     @Override
-    public Close getClose(Symbol symbol) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("symbol", symbol);
+    public Close getClose(final Symbol symbol) {
+        final MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("symbol", symbol.toString());
         return namedParameterJdbcTemplate.queryForObject(GET_CLOSE, mapSqlParameterSource, new BeanPropertyRowMapper<>(Close.class));
     }
 
     @Override
-    public Double getClosePrice(Symbol symbol) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("symbol", symbol);
+    public Double getClosePrice(final Symbol symbol) {
+        final MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("symbol", symbol.toString());
         return namedParameterJdbcTemplate.queryForObject(GET_PRICE, mapSqlParameterSource, Double.class);
     }
 }
