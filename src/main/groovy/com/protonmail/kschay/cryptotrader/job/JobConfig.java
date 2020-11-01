@@ -18,16 +18,16 @@ public class JobConfig {
     private final JobProperties jobProperties;
     private final JobBuilderFactory jobBuilderFactory;
     private final JobExecutionListener jobListener;
-    private final Step step;
+    private final Step close;
 
     public JobConfig(JobProperties jobProperties,
                      JobBuilderFactory jobBuilderFactory,
                      JobExecutionListener jobListener,
-                     Step step) {
+                     Step close) {
         this.jobProperties = jobProperties;
         this.jobBuilderFactory = jobBuilderFactory;
         this.jobListener = jobListener;
-        this.step = step;
+        this.close = close;
     }
 
     @Bean
@@ -35,7 +35,7 @@ public class JobConfig {
         return jobBuilderFactory.get(jobProperties.getName())
                 .incrementer(new RunIdIncrementer())
                 .listener(jobListener)
-                .flow(step)
+                .flow(close)
                 .end()
                 .build();
     }
