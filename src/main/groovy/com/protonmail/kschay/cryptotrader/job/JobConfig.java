@@ -22,6 +22,7 @@ public class JobConfig {
     private final Step ema;
     private final Step strength;
     private final Step action;
+    private final Step prepare;
 
     public JobConfig(JobProperties jobProperties,
                      JobBuilderFactory jobBuilderFactory,
@@ -29,7 +30,8 @@ public class JobConfig {
                      Step close,
                      Step ema,
                      Step strength,
-                     Step action) {
+                     Step action,
+                     Step prepare) {
         this.jobProperties = jobProperties;
         this.jobBuilderFactory = jobBuilderFactory;
         this.jobListener = jobListener;
@@ -37,6 +39,7 @@ public class JobConfig {
         this.ema = ema;
         this.strength = strength;
         this.action = action;
+        this.prepare = prepare;
     }
 
     @Bean
@@ -48,6 +51,7 @@ public class JobConfig {
                 .next(ema)
                 .next(strength)
                 .next(action)
+                .next(prepare)
                 .end()
                 .build();
     }

@@ -18,4 +18,8 @@ class CurrencyAction {
         this.action = action
         this.date = DateAndTime.localCloseDate()
     }
+
+    static Boolean isActionable(CurrencyAction currencyAction) {
+        return currencyAction.getAction() != Action.NONE
+    }
 }
