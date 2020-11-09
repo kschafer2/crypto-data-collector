@@ -32,13 +32,13 @@ enum Symbol {
     LINKUSD
 
     Integer getPeriod() {
-        if(secondCurrency() == Currency.USD) {
+        if(quote() == Currency.USD) {
             return 16
         }
         return 8
     }
 
-    Currency firstCurrency() {
+    Currency base() {
         final def symbolString = toString()
 
         if(symbolString.length() == 6) {
@@ -54,7 +54,7 @@ enum Symbol {
         return null
     }
 
-    Currency secondCurrency() {
+    Currency quote() {
         final def symbolString = toString()
 
         if(symbolString.length() == 6) {
@@ -70,7 +70,7 @@ enum Symbol {
         return null
     }
 
-    static Symbol fromLowerCaseString(final String lowerCaseString) {
+    static Symbol symbolOf(final String lowerCaseString) {
         return valueOf(lowerCaseString.toUpperCase())
     }
 

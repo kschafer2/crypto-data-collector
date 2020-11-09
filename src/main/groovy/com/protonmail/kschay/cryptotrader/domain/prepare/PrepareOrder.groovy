@@ -13,6 +13,8 @@ class PrepareOrder {
     Side side
     Timestamp date
 
+    PrepareOrder(){}
+
     PrepareOrder(CurrencyAction currencyAction) {
         def split = currencyAction.action.toString().split("_")
 

@@ -8,4 +8,8 @@ enum Side {
         if(input.toString().equalsIgnoreCase("FROM")) return BUY
         return null
     }
+
+    static Side sideOf(final String lowerCaseString) {
+        return valueOf(lowerCaseString.toUpperCase())
+    }
 }

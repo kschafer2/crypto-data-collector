@@ -29,6 +29,8 @@ abstract class GeminiPrivateClient extends Logging {
     protected WebClient.ResponseSpec post(final Payload payload) {
         Thread.sleep(1000)
 
+        log.info("Payload: " + objectMapper.writeValueAsString(payload))
+
         try {
             final def b64payload = Base64.encoder.encodeToString(objectMapper.writeValueAsString(payload).getBytes())
             final def signature = buildSignature(System.getenv(geminiProperties.authSecret), b64payload)

@@ -2,6 +2,8 @@ package com.protonmail.kschay.cryptotrader.step.prepare;
 
 import com.protonmail.kschay.cryptotrader.domain.prepare.PrepareOrder;
 import com.protonmail.kschay.cryptotrader.domain.prepare.PrepareOrderRepository;
+import com.protonmail.kschay.cryptotrader.util.DateAndTime;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -29,6 +31,10 @@ public class PrepareOrderDao implements PrepareOrderRepository {
             "order by insertTime desc " +
             "limit 1 ";
 
+    private static final String GET_PREPARE_ORDERS =
+            "select symbol, side, date from prepare " +
+            "where date(date) = date(:date)";
+
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public PrepareOrderDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -50,7 +56,11 @@ public class PrepareOrderDao implements PrepareOrderRepository {
 
     @Override
     public List<PrepareOrder> getPrepareOrders() {
-        return null;
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("date", DateAndTime.localCloseDate());
+        return namedParameterJdbcTemplate.query(
+                GET_PREPARE_ORDERS, mapSqlParameterSource, new BeanPropertyRowMapper<>(PrepareOrder.class)
+        );
     }
 
     private boolean updatePrepareOrder(PrepareOrder prepareOrder) {
