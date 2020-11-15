@@ -62,11 +62,11 @@ public class TradeList extends ArrayList<Trade> {
         for(BigDecimal amount : amounts) {
             totalAmount = totalAmount.add(amount);
         }
-        return String.valueOf(totalAmount);
+        return totalAmount.toPlainString();
     }
 
     public String getAveragePrice() {
-        return String.valueOf(getTotalPriceAmount().divide(getTotalWeight(), 8, RoundingMode.DOWN));
+        return getTotalPriceAmount().divide(getTotalWeight(), 8, RoundingMode.DOWN).toPlainString();
     }
 
     public BigDecimal convertAmount() {
@@ -78,7 +78,7 @@ public class TradeList extends ArrayList<Trade> {
         for(BigDecimal amount : amounts) {
             totalAmount = totalAmount.add(amount);
         }
-        return String.valueOf(toBigDecimal(getTotalAmount()).subtract(totalAmount));
+        return toBigDecimal(getTotalAmount()).subtract(totalAmount).toPlainString();
     }
 
     private BigDecimal getTotalPriceAmount() {

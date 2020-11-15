@@ -13,22 +13,42 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 @Configuration
 @EnableConfigurationProperties( {JobProperties.class, GeminiProperties.class, EmailProperties.class} )
 public class AppConfig {
 
     private final EmailProperties emailProperties;
+    private final GeminiProperties geminiProperties;
 
     @Value("#{'${currencies}'.split(',')}")
     private CurrencyList currencyList;
 
-    public AppConfig(EmailProperties emailProperties) {
+    public AppConfig(EmailProperties emailProperties,
+                     GeminiProperties geminiProperties) {
         this.emailProperties = emailProperties;
+        this.geminiProperties = geminiProperties;
     }
 
     @Bean
     public WebClient webClient() {
         return WebClient.create();
+    }
+
+    @Bean
+    public Mac mac() {
+        try {
+            final Mac mac = Mac.getInstance("HmacSHA384");
+            final String secret = System.getenv(geminiProperties.getAuthSecret());
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA384");
+            mac.init(secretKeySpec);
+            return mac;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failure while converting to HMac SHA256",e);
+        }
     }
 
     @Bean
@@ -49,7 +69,7 @@ public class AppConfig {
     @Bean
     public SymbolList symbolList() {
         SymbolList symbolList = new SymbolList();
-        currencyList().forEach(c -> symbolList.addAll(c.symbols()));
+        currencyList().forEach(c -> symbolList.addAll(c.getSymbols()));
         return symbolList;
     }
 }

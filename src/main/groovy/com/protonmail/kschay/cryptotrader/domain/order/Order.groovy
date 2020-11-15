@@ -27,10 +27,6 @@ class Order {
     String price
     @JsonProperty("original_amount")
     String originalAmount
-
-    boolean isCancelled() {
-        return isCancelled
-    }
 }
 
 

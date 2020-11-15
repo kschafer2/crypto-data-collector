@@ -26,7 +26,7 @@ public class StrengthServiceImpl implements StrengthService {
     }
 
     public Strength determineStrength(Currency currency) {
-        List<Symbol> symbols = currency.symbols();
+        List<Symbol> symbols = currency.getSymbols();
         return symbols.stream().filter(this::isStrong).count() == symbols.size() ? STRONG : WEAK;
     }
 

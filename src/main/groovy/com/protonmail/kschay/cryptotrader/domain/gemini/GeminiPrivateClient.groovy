@@ -1,7 +1,6 @@
 package com.protonmail.kschay.cryptotrader.domain.gemini
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.protonmail.kschay.cryptotrader.domain.log.Logging
 import com.protonmail.kschay.cryptotrader.domain.payload.Payload
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.codec.Hex
@@ -9,21 +8,19 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
 import javax.crypto.Mac
-import javax.crypto.spec.SecretKeySpec
-import java.security.InvalidKeyException
 
-abstract class GeminiPrivateClient extends Logging {
+abstract class GeminiPrivateClient extends GeminiPublicClient {
 
-    private final ObjectMapper objectMapper
-    private final GeminiProperties geminiProperties
-    private final WebClient webClient
+    protected final ObjectMapper objectMapper
+    private final Mac mac
 
-    GeminiPrivateClient(ObjectMapper objectMapper,
-                        GeminiProperties geminiProperties,
-                        WebClient webClient) {
+    GeminiPrivateClient(GeminiProperties geminiProperties,
+                        WebClient webClient,
+                        ObjectMapper objectMapper,
+                        Mac mac) {
+        super(geminiProperties, webClient)
         this.objectMapper = objectMapper
-        this.geminiProperties = geminiProperties
-        this.webClient = webClient
+        this.mac = mac
     }
 
     protected WebClient.ResponseSpec post(final Payload payload) {
@@ -33,7 +30,7 @@ abstract class GeminiPrivateClient extends Logging {
 
         try {
             final def b64payload = Base64.encoder.encodeToString(objectMapper.writeValueAsString(payload).getBytes())
-            final def signature = buildSignature(System.getenv(geminiProperties.authSecret), b64payload)
+            final def signature = buildSignature(b64payload)
 
             return webClient.post()
                     .uri(geminiProperties.baseUrl + payload.getRequest())
@@ -56,15 +53,7 @@ abstract class GeminiPrivateClient extends Logging {
         }
     }
 
-    private static String buildSignature(final String secret, final String data) {
-        try {
-            final Mac mac = Mac.getInstance("HmacSHA384")
-            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA384")
-            mac.init(secretKeySpec)
+    private String buildSignature(final String data) {
             return Hex.encode(mac.doFinal(data.getBytes())).toString()
-        }
-        catch (InvalidKeyException ignored) {
-            throw new RuntimeException("Invalid key exception while converting to HMac SHA256")
-        }
     }
 }

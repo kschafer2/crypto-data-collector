@@ -5,8 +5,8 @@ import org.springframework.web.reactive.function.client.WebClient
 
 abstract class GeminiPublicClient extends Logging {
 
-    private final GeminiProperties geminiProperties
-    private final WebClient webClient
+    protected final GeminiProperties geminiProperties
+    protected final WebClient webClient
 
     GeminiPublicClient(GeminiProperties geminiProperties,
                        WebClient webClient) {

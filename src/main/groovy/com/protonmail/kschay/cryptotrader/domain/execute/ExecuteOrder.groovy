@@ -45,16 +45,21 @@ class ExecuteOrder {
             return
         }
         if(side == BUY) {
-            amount = calculateAmount(String.valueOf(deductTakerFee(value)))
+            amount = calculateAmount(deductTakerFee(value).toPlainString())
         }
         else if(side == SELL) {
             amount = value
         }
     }
 
+    boolean amountIsBelowTradeMinimum() {
+        return toBigDecimal(amount) < symbol.base().tradeMinimum
+    }
+
     private String calculateAmount(String value) {
-        String.valueOf(toBigDecimal(value)
-                .divide(toBigDecimal(price), 8, RoundingMode.DOWN))
+        return toBigDecimal(value)
+                .divide(toBigDecimal(price), 8, RoundingMode.DOWN)
+                .toPlainString()
     }
 
     private BigDecimal deductTakerFee(String value) {
@@ -76,10 +81,5 @@ class ExecuteOrder {
     private Integer getScale() {
         if(symbol.quote() == Currency.USD && side == BUY) return 2
         return 8
-    }
-
-    void subtractFromAmount(String value) {
-        this.amount = toBigDecimal(this.amount)
-                .subtract(toBigDecimal(value))
     }
 }
