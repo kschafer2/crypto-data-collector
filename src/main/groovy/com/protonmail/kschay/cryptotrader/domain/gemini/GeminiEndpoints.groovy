@@ -1,6 +1,8 @@
 package com.protonmail.kschay.cryptotrader.domain.gemini
 
 enum GeminiEndpoints {
+    GET_TICKER("/v2/ticker/"),
+    GET_SIMPLE_TICKER("/v1/pubticker/"),
     NEW_ORDER("/v1/order/new"),
     CANCEL_ORDER("/v1/order/cancel"),
     CANCEL_ALL_SESSION_ORDERS("/v1/order/cancel/session"),

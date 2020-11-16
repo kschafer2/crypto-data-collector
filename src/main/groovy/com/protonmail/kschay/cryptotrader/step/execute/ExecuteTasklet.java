@@ -1,6 +1,7 @@
 package com.protonmail.kschay.cryptotrader.step.execute;
 
 import com.protonmail.kschay.cryptotrader.domain.execute.ExecuteOrder;
+import com.protonmail.kschay.cryptotrader.domain.execute.ExecuteService;
 import com.protonmail.kschay.cryptotrader.domain.prepare.PrepareOrderRepository;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -12,19 +13,20 @@ import org.springframework.stereotype.Component;
 public class ExecuteTasklet implements Tasklet {
 
     private final PrepareOrderRepository prepareOrderRepository;
-    private final ExecuteStepClient executeStepClient;
+    private final ExecuteService executeService;
 
     public ExecuteTasklet(PrepareOrderRepository prepareOrderRepository,
-                          ExecuteStepClient executeStepClient) {
+                          ExecuteService executeService) {
         this.prepareOrderRepository = prepareOrderRepository;
-        this.executeStepClient = executeStepClient;
+        this.executeService = executeService;
     }
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-        prepareOrderRepository.getPrepareOrders().stream()
+        prepareOrderRepository.getPrepareOrders()
+                .stream()
                 .map(ExecuteOrder::new)
-                .forEach(executeStepClient::placeOrder);
+                .forEach(executeService::placeOrder);
 
         return RepeatStatus.FINISHED;
     }

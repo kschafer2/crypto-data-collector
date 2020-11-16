@@ -6,27 +6,50 @@ import org.springframework.http.MediaType
 import org.springframework.security.crypto.codec.Hex
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import reactor.util.retry.Retry
 
 import javax.crypto.Mac
+import java.util.stream.Collectors
 
 abstract class GeminiPrivateClient extends GeminiPublicClient {
 
-    protected final ObjectMapper objectMapper
     private final Mac mac
 
     GeminiPrivateClient(GeminiProperties geminiProperties,
                         WebClient webClient,
                         ObjectMapper objectMapper,
                         Mac mac) {
-        super(geminiProperties, webClient)
-        this.objectMapper = objectMapper
+        super(geminiProperties, webClient, objectMapper)
         this.mac = mac
     }
 
-    protected WebClient.ResponseSpec post(final Payload payload) {
+    protected def postForMono(final Payload payload, final Class clazz) {
+        def response = post(payload)
+                .bodyToMono(clazz)
+                .retryWhen(Retry.indefinitely())
+                .doOnError(RuntimeException.class, { e -> log.error(e.getMessage())})
+                .block()
+
+        log.info("Response " + clazz.getSimpleName() + ": " + objectMapper.writeValueAsString(response))
+        return response
+    }
+
+    protected def postForFlux(final Payload payload, final Class clazz) {
+        def response = post(payload)
+                .bodyToFlux(clazz)
+                .retryWhen(Retry.indefinitely())
+                .doOnError(RuntimeException.class, { e -> log.error(e.getMessage())})
+                .toStream()
+                .collect(Collectors.toList())
+
+        log.info("Response " + clazz.getSimpleName() + ": " + objectMapper.writeValueAsString(response))
+        return response
+    }
+
+    private WebClient.ResponseSpec post(final Payload payload) {
         Thread.sleep(1000)
 
-        log.info("Payload: " + objectMapper.writeValueAsString(payload))
+        log.info("Request: " + objectMapper.writeValueAsString(payload))
 
         try {
             final def b64payload = Base64.encoder.encodeToString(objectMapper.writeValueAsString(payload).getBytes())
