@@ -1,2 +1,2 @@
-# crypto-trader
-Spring Batch project for trading 
+# crypto-data-collector
+Spring Batch project for collecting crypto data
