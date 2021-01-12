@@ -1,28 +1,37 @@
 package com.protonmail.kschay.cryptodatacollector.step.close;
 
-import com.protonmail.kschay.cryptodatacollector.domain.Symbol;
-import com.protonmail.kschay.cryptodatacollector.domain.SymbolList;
-import com.protonmail.kschay.cryptodatacollector.domain.Ticker;
-import com.protonmail.kschay.cryptodatacollector.domain.TickerClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.protonmail.kschay.cryptodatacollector.domain.*;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Iterator;
 
 @Component
-public class TickerReader implements ItemReader<Ticker> {
+public class TickerReader extends MyWebClient implements TickerClient, ItemReader<Ticker> {
 
-    private final TickerClient tickerClient;
+    @Value("${gemini-exchange-service.url}")
+    private String geminiExchangeServiceUrl;
+
     private Iterator<Symbol> symbolIterator;
 
-    public TickerReader(TickerClient tickerClient,
+    public TickerReader(WebClient webClient,
+                        ObjectMapper objectMapper,
                         SymbolList symbolList) {
-        this.tickerClient = tickerClient;
+        super(webClient, objectMapper);
         this.symbolIterator = symbolList.iterator();
     }
 
     @Override
     public Ticker read() {
-        return symbolIterator.hasNext() ? tickerClient.getTicker(symbolIterator.next()) : null;
+        return symbolIterator.hasNext() ? getTicker(symbolIterator.next()) : null;
+    }
+
+    @Override
+    public Ticker getTicker(final Symbol symbol) {
+        log.info("Getting Ticker for: " + symbol);
+        return (Ticker) getForMono(geminiExchangeServiceUrl + "/ticker/" + symbol, Ticker.class);
     }
 }
