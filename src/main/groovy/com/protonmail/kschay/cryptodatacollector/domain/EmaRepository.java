@@ -1,16 +1,12 @@
 package com.protonmail.kschay.cryptodatacollector.domain;
 
-import java.sql.Timestamp;
+import org.springframework.data.repository.CrudRepository;
 
-public interface EmaRepository {
+import java.time.LocalDate;
+import java.util.Optional;
 
-    Double getEmaValue(Symbol symbol);
+public interface EmaRepository extends CrudRepository<Ema, Long> {
 
-    Double getPreviousEmaValue(Symbol symbol);
+    Optional<Ema> findFirstBySymbolAndDateOrderByInsertTimeDesc(Symbol symbol, LocalDate date);
 
-    boolean emaExists(Symbol symbol, Timestamp date);
-
-    boolean insert(Ema ema);
-
-    boolean update(Ema ema);
 }
