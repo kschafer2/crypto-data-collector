@@ -1,16 +1,13 @@
 package com.protonmail.kschay.cryptodatacollector.domain;
 
-import java.sql.Timestamp;
+import org.springframework.data.repository.CrudRepository;
 
-public interface CloseRepository {
+import java.time.LocalDate;
+import java.util.Optional;
 
-    boolean insert(Close close);
+public interface CloseRepository extends CrudRepository<Close, Long> {
 
-    boolean closeExists(Symbol symbol, Timestamp date);
+    Optional<Close> findFirstBySymbolAndDateOrderByInsertTimeDesc(Symbol symbol, LocalDate date);
 
-    boolean update(Close close);
-
-    Close getClose(Symbol symbol);
-
-    Double getClosePrice(Symbol symbol);
 }
+

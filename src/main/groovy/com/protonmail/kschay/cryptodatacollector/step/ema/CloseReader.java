@@ -1,8 +1,8 @@
 package com.protonmail.kschay.cryptodatacollector.step.ema;
 
 import com.protonmail.kschay.cryptodatacollector.domain.Close;
-import com.protonmail.kschay.cryptodatacollector.domain.CloseRepository;
 import com.protonmail.kschay.cryptodatacollector.domain.Symbol;
+import com.protonmail.kschay.cryptodatacollector.job.DataService;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.stereotype.Component;
 
@@ -12,17 +12,17 @@ import java.util.List;
 @Component
 public class CloseReader implements ItemReader<Close> {
 
-    private final CloseRepository closeRepository;
+    private final DataService dataService;
     private final Iterator<Symbol> symbolIterator;
 
-    public CloseReader(CloseRepository closeRepository,
+    public CloseReader(DataService dataService,
                        List<Symbol> symbols) {
-        this.closeRepository = closeRepository;
+        this.dataService = dataService;
         this.symbolIterator = symbols.iterator();
     }
 
     @Override
     public Close read() {
-        return symbolIterator.hasNext() ? closeRepository.getClose(symbolIterator.next()) : null;
+        return symbolIterator.hasNext() ? dataService.getLatestClose(symbolIterator.next()).orElse(null) : null;
     }
 }
