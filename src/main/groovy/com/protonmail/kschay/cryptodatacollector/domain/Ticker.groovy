@@ -1,9 +1,9 @@
 package com.protonmail.kschay.cryptodatacollector.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.protonmail.kschay.cryptodatacollector.util.DateAndTime
 
-import java.time.LocalDateTime
+import static com.protonmail.kschay.cryptodatacollector.job.DateTimeService.*
+import static java.time.LocalDateTime.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Ticker {
@@ -11,7 +11,7 @@ class Ticker {
     List<Double> changes
 
     Double dayClosePrice() {
-        return dayClosePrice(DateAndTime.localCloseHour())
+        return dayClosePrice(localCloseHour())
     }
 
     Double dayClosePrice(final int localCloseHour) {
@@ -19,7 +19,7 @@ class Ticker {
     }
 
     private static int dayCloseIndex(final int localCloseHour) {
-        int currentHour = LocalDateTime.now().getHour()
+        int currentHour = now().getHour()
 
         if(currentHour < localCloseHour) {
             return currentHour + (24 - localCloseHour)
