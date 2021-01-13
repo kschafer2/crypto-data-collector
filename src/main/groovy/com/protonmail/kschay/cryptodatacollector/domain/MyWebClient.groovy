@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.util.retry.Retry
 
-abstract class GeminiClient extends Logging {
+abstract class MyWebClient extends Logging {
 
     protected final WebClient webClient
     protected final ObjectMapper objectMapper
 
-    GeminiClient(WebClient webClient,
-                 ObjectMapper objectMapper) {
+    MyWebClient(WebClient webClient,
+                ObjectMapper objectMapper) {
         this.webClient = webClient
         this.objectMapper = objectMapper
     }
