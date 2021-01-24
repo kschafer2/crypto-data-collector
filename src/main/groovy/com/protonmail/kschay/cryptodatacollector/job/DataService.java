@@ -49,4 +49,8 @@ public class DataService {
         }
         throw new RuntimeException("Failed to retrieve previous ema value for " + symbol);
     }
+
+    public CloseEma getCloseEma(Symbol symbol) {
+        return new CloseEma(getLatestClose(symbol).orElseThrow(), getLatestEma(symbol).orElseThrow());
+    }
 }
